@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) throws ValidationException {
-        if (user.getName().isBlank()) {
+        if (user.getName() == null) {
             user.setName(user.getLogin());
         }
         if (validationUser(user)) {

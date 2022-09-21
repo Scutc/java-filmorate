@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) throws ValidationException {
-        if (user.getName() == null) {
+        if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         if (validationUser(user)) {
@@ -60,6 +60,10 @@ public class UserController {
         if (user == null) {
             log.warn("Объект Пользователь не задан!");
             return false;
+        }
+        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            isValidated = false;
+            log.warn("логин некорректный");
         }
         if (user.getEmail() == null) {
             isValidated = false;

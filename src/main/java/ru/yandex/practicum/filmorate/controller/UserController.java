@@ -17,15 +17,15 @@ import java.util.Map;
 @Slf4j
 public class UserController {
 
-    Map<Integer, User> users = new HashMap<>();
+    private Map<Integer, User> users = new HashMap<>();
     private int idGenerator = 0;
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) throws ValidationException {
+    public User createUser(@Valid @RequestBody User user) throws ValidationException {
         if (user.getName() == null) {
             user.setName(user.getLogin());
         }
-        if (userValidation(user)) {
+        if (validationUser(user)) {
             user.setId(++idGenerator);
             users.put(user.getId(), user);
             log.info("Добавлен пользователь " + user.getId());
@@ -38,7 +38,7 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) throws ValidationException {
-        if (users.containsKey(user.getId()) && userValidation(user)) {
+        if (users.containsKey(user.getId()) && validationUser(user)) {
             users.put(user.getId(), user);
             log.info("Обновлены данные пользователя " + user.getId());
         } else {
@@ -54,7 +54,7 @@ public class UserController {
         return new ArrayList<>(users.values());
     }
 
-    private boolean userValidation(User user) {
+    private boolean validationUser(User user) {
         boolean isValidated = true;
 
         if (user == null) {

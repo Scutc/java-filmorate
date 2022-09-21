@@ -17,13 +17,13 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
 
-    Map<Integer, Film> films = new HashMap<>();
-    int idGenerator = 0;
+    private Map<Integer, Film> films = new HashMap<>();
+    private int idGenerator = 0;
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) throws ValidationException {
+    public Film createFilm(@Valid @RequestBody Film film) throws ValidationException {
 
-        if (filmValidation(film)) {
+        if (validationFilm(film)) {
             film.setId(++idGenerator);
             films.put(film.getId(), film);
             log.info("Добавлен фильм " + film.getName());
@@ -36,7 +36,7 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
-        if (films.containsKey(film.getId()) && filmValidation(film)) {
+        if (films.containsKey(film.getId()) && validationFilm(film)) {
             films.put(film.getId(), film);
             log.info("Обновлены данные фильма " + film.getName());
         } else {
@@ -52,7 +52,7 @@ public class FilmController {
         return new ArrayList<>(films.values());
     }
 
-    private boolean filmValidation(Film film) {
+    private boolean validationFilm(Film film) {
         boolean isValidated = true;
 
         if (film == null) {

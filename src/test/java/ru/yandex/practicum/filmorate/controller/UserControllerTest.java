@@ -9,9 +9,8 @@ import java.time.LocalDate;
 public class UserControllerTest {
 
     @Test
-    void validationUserTest() throws ValidationException {
+    void validationUserTestWithGoodData() throws ValidationException {
         UserController userController = new UserController();
-
 //  Создание пользователя с корректными данными
         User user1 = User.builder()
                 .id(1)
@@ -25,7 +24,12 @@ public class UserControllerTest {
         userController.createUser(user1);
         isValidated = true;
         assertTrue(isValidated);
+    }
 
+    @Test
+    void validationUserTestWithIncorrectEmail() throws ValidationException {
+        UserController userController = new UserController();
+        boolean isValidated;
 //  Создание пользователя с некорректным email
         User user2 = User.builder()
                 .id(2)
@@ -56,7 +60,12 @@ public class UserControllerTest {
             isValidated = false;
         }
         assertFalse(isValidated);
+    }
 
+    @Test
+    void validationUserTestWithIncorrectLogin() throws ValidationException {
+        UserController userController = new UserController();
+        boolean isValidated;
 //  Создание пользователя с некорректным логином
         User user4 = User.builder()
                 .id(4)
@@ -87,7 +96,12 @@ public class UserControllerTest {
             isValidated = false;
         }
         assertFalse(isValidated);
+    }
 
+    @Test
+    void validationUserTestWithIncorrectUserName() throws ValidationException {
+        UserController userController = new UserController();
+        boolean isValidated;
 //  Создание пользователя с некорректным именем
         User user6 = User.builder()
                 .id(6)
@@ -103,7 +117,12 @@ public class UserControllerTest {
             isValidated = false;
         }
         assertTrue(isValidated);
+    }
 
+    @Test
+    void validationUserTestWithIncorrectDateOfBirth() throws ValidationException {
+        UserController userController = new UserController();
+        boolean isValidated;
 //  Создание пользователя с некорректной датой рождения
         User user7 = User.builder()
                 .id(7)

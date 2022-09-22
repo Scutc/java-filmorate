@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilmControllerTests {
 
     @Test
-    void validationFilmTest() throws ValidationException {
+    void validationFilmWithGoodData() throws ValidationException {
         FilmController filmController = new FilmController();
 
 // Тест создания фильма, соответствующего критериям
@@ -30,22 +30,26 @@ public class FilmControllerTests {
             isValidated = false;
         }
         assertTrue(isValidated);
+    }
 
+    @Test
+    void validationFilmWithLongDescription() throws ValidationException {
 
+        FilmController filmController = new FilmController();
+        boolean isValidated;
 // Тест создания фильма с описанием  более 200 символов
-
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 1; i <=201; i++) {
+        for (int i = 1; i <= 201; i++) {
             stringBuilder.append("f");
         }
 
         Film film2 = Film.builder()
-                    .id(2)
-                    .name("Фильм 2")
-                    .description(stringBuilder.toString())
-                    .releaseDate(LocalDate.of(2022, 10, 15))
-                    .duration(90L)
-                    .build();
+                .id(2)
+                .name("Фильм 2")
+                .description(stringBuilder.toString())
+                .releaseDate(LocalDate.of(2022, 10, 15))
+                .duration(90L)
+                .build();
         try {
             filmController.createFilm(film2);
             isValidated = true;
@@ -53,7 +57,12 @@ public class FilmControllerTests {
             isValidated = false;
         }
         assertFalse(isValidated);
+    }
 
+    @Test
+    void validationFilmWithIncorrectDate() throws ValidationException {
+        FilmController filmController = new FilmController();
+        boolean isValidated;
 //Создание фильма с некорректной датой
         Film film3 = Film.builder()
                 .id(3)
@@ -69,8 +78,13 @@ public class FilmControllerTests {
             isValidated = false;
         }
         assertFalse(isValidated);
+    }
 
-//Создание фильма с отрицательной продолжительностью
+    @Test
+    void validationFilmWithNegativeDuration() throws ValidationException {
+        FilmController filmController = new FilmController();
+        boolean isValidated;
+        //Создание фильма с отрицательной продолжительностью
         Film film4 = Film.builder()
                 .id(4)
                 .name("Фильм 4")
@@ -85,7 +99,12 @@ public class FilmControllerTests {
             isValidated = false;
         }
         assertFalse(isValidated);
+    }
 
+    @Test
+    void validationFilmWithEmptyName() throws ValidationException {
+        FilmController filmController = new FilmController();
+        boolean isValidated;
 //Создание фильма c пустным названием
         Film film5 = Film.builder()
                 .id(5)

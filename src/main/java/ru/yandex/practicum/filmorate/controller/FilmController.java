@@ -1,9 +1,14 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -17,16 +22,18 @@ import java.util.Map;
 @Slf4j
 public class FilmController {
 
-    private Map<Integer, Film> films = new HashMap<>();
-    private int idGenerator = 0;
+    private FilmStorage inMemoryFilmStorage;
+
+    @Autowired
+    public FilmController(InMemoryFilmStorage inMemoryFilmStorage) {
+        this.inMemoryFilmStorage = inMemoryFilmStorage;
+    }
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) throws ValidationException {
 
         if (validationFilm(film)) {
-            film.setId(++idGenerator);
-            films.put(film.getId(), film);
-            log.info("Добавлен фильм " + film.getName());
+            inMemoryFilmStorage.createFilm(film);
         } else {
             log.warn("Фильм не добавлен!");
             throw new ValidationException("Проверьте корректность введенных данных");
@@ -36,9 +43,8 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
-        if (films.containsKey(film.getId()) && validationFilm(film)) {
-            films.put(film.getId(), film);
-            log.info("Обновлены данные фильма " + film.getName());
+        if (inMemoryFilmStorage.getFilms().contains(film) && validationFilm(film)) {
+            inMemoryFilmStorage.updateFilm(film);
         } else {
             log.warn("Фильм не обновлен!");
             throw new ValidationException("Проверьте корректность введенных данных");
@@ -48,8 +54,16 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getFilms() {
-        log.info("Запрошен список фильмов: " + films);
-        return new ArrayList<>(films.values());
+        return inMemoryFilmStorage.getFilms();
+    }
+
+    @DeleteMapping
+    public boolean deleteFilms(@Valid @RequestBody Film film) {
+        if (inMemoryFilmStorage.getFilms().contains(film)) {
+            return inMemoryFilmStorage.deleteFilm(film);
+        } else {
+            return false;
+        }
     }
 
     private boolean validationFilm(Film film) {

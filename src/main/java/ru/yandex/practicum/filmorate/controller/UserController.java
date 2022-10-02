@@ -3,18 +3,15 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
@@ -32,7 +29,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) throws ValidationException {
-        if (user.getName() == null) {
+        if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         if (validationUser(user)) {
@@ -45,8 +42,12 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
-        if (userStorage.getUsers().contains(user.getId()) && validationUser(user)) {
+    public User updateUser(@Valid @RequestBody User user) {
+        System.out.println(userStorage.getUsers().contains(user));
+        if (userStorage.getUser(user.getId()) == null) {
+            throw new UserNotFoundException("Пользователь с таким ID не найден. Данные не обновлены!");
+        }
+        if (userStorage.getUser(user.getId()) != null && validationUser(user)) {
             userStorage.updateUser(user);
         } else {
             log.warn("Данные пользователя не обновлены");
@@ -62,7 +63,17 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User getUser(@PathVariable long userId) {
-        return userStorage.getUser(userId);
+        User user = userStorage.getUser(userId);
+        if (user != null) {
+            return userStorage.getUser(userId);
+        } else {
+            throw new UserNotFoundException("Пользователь с таким ID не найден");
+        }
+    }
+
+    @GetMapping("/{userId}/friends/common/{otherUserId}")
+    public List<User> getCommonFriends(@PathVariable long userId, @PathVariable long otherUserId) {
+        return userService.getUsersCommonFriends(userId, otherUserId);
     }
 
     @PutMapping("/{userId}/friends/{friendId}")

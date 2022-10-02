@@ -28,7 +28,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film createFilm(@Valid @RequestBody Film film) throws ValidationException {
+    public Film createFilm(@Valid @RequestBody Film film) {
 
         if (validationFilm(film)) {
             filmStorage.createFilm(film);

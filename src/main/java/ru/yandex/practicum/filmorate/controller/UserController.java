@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -17,8 +20,12 @@ import java.util.Map;
 @Slf4j
 public class UserController {
 
-    private Map<Integer, User> users = new HashMap<>();
-    private int idGenerator = 0;
+    private UserStorage userStorage;
+
+    @Autowired
+    public UserController(UserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
+    }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) throws ValidationException {
@@ -26,9 +33,7 @@ public class UserController {
             user.setName(user.getLogin());
         }
         if (validationUser(user)) {
-            user.setId(++idGenerator);
-            users.put(user.getId(), user);
-            log.info("Добавлен пользователь " + user.getId());
+            userStorage.createUser(user);
         } else {
             log.warn("Пользователь не добавлен");
             throw new ValidationException("Проверьте корректность введенных данных");
@@ -38,9 +43,8 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) throws ValidationException {
-        if (users.containsKey(user.getId()) && validationUser(user)) {
-            users.put(user.getId(), user);
-            log.info("Обновлены данные пользователя " + user.getId());
+        if (userStorage.getUsers().contains(user.getId()) && validationUser(user)) {
+            userStorage.updateUser(user);
         } else {
             log.warn("Данные пользователя не обновлены");
             throw new ValidationException("Проверьте корректность введенных данных");
@@ -50,8 +54,7 @@ public class UserController {
 
     @GetMapping
     public List<User> getUsers() {
-        log.info("Запрошен список пользователей: " + users);
-        return new ArrayList<>(users.values());
+        return userStorage.getUsers();
     }
 
     private boolean validationUser(User user) {

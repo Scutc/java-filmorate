@@ -7,33 +7,28 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
 
-    private FilmStorage inMemoryFilmStorage;
+    private FilmStorage filmStorage;
 
     @Autowired
-    public FilmController(InMemoryFilmStorage inMemoryFilmStorage) {
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
+    public FilmController(FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
     }
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) throws ValidationException {
 
         if (validationFilm(film)) {
-            inMemoryFilmStorage.createFilm(film);
+            filmStorage.createFilm(film);
         } else {
             log.warn("Фильм не добавлен!");
             throw new ValidationException("Проверьте корректность введенных данных");
@@ -43,8 +38,8 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
-        if (inMemoryFilmStorage.getFilms().contains(film) && validationFilm(film)) {
-            inMemoryFilmStorage.updateFilm(film);
+        if (filmStorage.getFilms().contains(film) && validationFilm(film)) {
+            filmStorage.updateFilm(film);
         } else {
             log.warn("Фильм не обновлен!");
             throw new ValidationException("Проверьте корректность введенных данных");
@@ -54,13 +49,13 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getFilms() {
-        return inMemoryFilmStorage.getFilms();
+        return filmStorage.getFilms();
     }
 
     @DeleteMapping
     public boolean deleteFilms(@Valid @RequestBody Film film) {
-        if (inMemoryFilmStorage.getFilms().contains(film)) {
-            return inMemoryFilmStorage.deleteFilm(film);
+        if (filmStorage.getFilms().contains(film)) {
+            return filmStorage.deleteFilm(film);
         } else {
             return false;
         }

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -20,11 +21,13 @@ import java.util.Map;
 @Slf4j
 public class UserController {
 
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserStorage userStorage, UserService userService) {
         this.userStorage = userStorage;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -55,6 +58,26 @@ public class UserController {
     @GetMapping
     public List<User> getUsers() {
         return userStorage.getUsers();
+    }
+
+    @GetMapping("/{userId}")
+    public User getUser(@PathVariable long userId) {
+        return userStorage.getUser(userId);
+    }
+
+    @PutMapping("/{userId}/friends/{friendId}")
+    public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
+        userService.addFriend(userId, friendId);
+    }
+
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
+        userService.deleteFriend(userId, friendId);
+    }
+
+    @GetMapping("/{userId}/friends")
+    public List<User> getUserFriends(@PathVariable long userId) {
+        return userService.getUserFriends(userId);
     }
 
     private boolean validationUser(User user) {

@@ -28,10 +28,10 @@ public class FilmService {
         filmStorage.getFilm(filmId).getLikes().remove(userId);
     }
 
-    public List<Film> getTopFilms() {
+    public List<Film> getTopFilms(int topCount) {
         return filmStorage.getFilms().stream()
                 .sorted(Comparator.comparingInt(f -> f.getLikes().size()))
-                .limit(10)
+                .limit(topCount)
                 .collect(Collectors.toList());
     }
 

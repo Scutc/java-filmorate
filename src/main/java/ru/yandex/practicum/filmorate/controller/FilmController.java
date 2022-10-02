@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
@@ -17,11 +18,13 @@ import java.util.List;
 @Slf4j
 public class FilmController {
 
-    private FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
+    private final FilmService filmService;
 
     @Autowired
-    public FilmController(FilmStorage filmStorage) {
+    public FilmController(FilmStorage filmStorage, FilmService filmService) {
         this.filmStorage = filmStorage;
+        this.filmService = filmService;
     }
 
     @PostMapping
@@ -52,6 +55,11 @@ public class FilmController {
         return filmStorage.getFilms();
     }
 
+    @GetMapping("/{filmId}")
+    public Film getFilm(@PathVariable long filmId) {
+        return filmStorage.getFilm(filmId);
+    }
+
     @DeleteMapping
     public boolean deleteFilms(@Valid @RequestBody Film film) {
         if (filmStorage.getFilms().contains(film)) {
@@ -59,6 +67,22 @@ public class FilmController {
         } else {
             return false;
         }
+    }
+
+    @PutMapping("/{filmId}/like/{userId}")
+    public void addLike(@PathVariable long filmId, @PathVariable long userId) {
+        filmService.addLike(filmId, userId);
+    }
+
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public void removeLike(@PathVariable long filmId, @PathVariable long userId) {
+        filmService.removeLike(filmId, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getTopFilms(
+            @RequestParam(defaultValue = "10", required = false) int topCount) {
+        return filmService.getTopFilms(topCount);
     }
 
     private boolean validationFilm(Film film) {

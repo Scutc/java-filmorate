@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 @Service
 @Slf4j
@@ -73,5 +71,4 @@ public class UserService {
         commonFriendsIds.forEach(t -> commonFriends.add(userStorage.getUser(t)));
         return commonFriends;
     }
-
 }

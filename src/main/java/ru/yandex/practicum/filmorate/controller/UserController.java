@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;

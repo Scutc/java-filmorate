@@ -42,9 +42,15 @@ public class UserService {
     }
 
     public User deleteFriend(long userId, long friendId) {
-        userStorage.getUser(userId).getFriends().remove(friendId);
-        userStorage.getUser(friendId).getFriends().remove(userId);
-        return userStorage.getUser(friendId);
+        User user = userStorage.getUser(userId);
+        User friend = userStorage.getUser(friendId);
+
+        if (user == null || friend == null) {
+            throw new UserNotFoundException("Пользователь не найден!");
+        }
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(userId);
+        return user;
     }
 
     public List<User> getUserFriends(long userId) {

@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -20,6 +17,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     @Override
     public Film createFilm(Film film) {
         film.setId(++idGenerator);
+        film.setLikes(new HashSet<>());
         films.put(film.getId(), film);
         log.info("Добавлен фильм " + film.getName());
         return film;
@@ -27,6 +25,9 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film updateFilm(Film film) {
+        if (film.getLikes() == null) {
+            film.setLikes(new HashSet<>());
+        }
         films.put(film.getId(), film);
         log.info("Обновлены данные фильма " + film.getName());
         return film;

@@ -43,7 +43,6 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        System.out.println(userStorage.getUsers().contains(user));
         if (userStorage.getUser(user.getId()) == null) {
             throw new UserNotFoundException("Пользователь с таким ID не найден. Данные не обновлены!");
         }

@@ -3,8 +3,11 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
@@ -40,8 +43,12 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
-        if (filmStorage.getFilms().contains(film) && validationFilm(film)) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        if (filmStorage.getFilm(film.getId()) == null) {
+            log.warn("Фильм c id " + film.getId() + " не найден. Данные не обновлены");
+            throw new FilmNotFoundException("Фильм не найден. Данные не обновлены!");
+        }
+        if (validationFilm(film)) {
             filmStorage.updateFilm(film);
         } else {
             log.warn("Фильм не обновлен!");
@@ -57,7 +64,12 @@ public class FilmController {
 
     @GetMapping("/{filmId}")
     public Film getFilm(@PathVariable long filmId) {
-        return filmStorage.getFilm(filmId);
+        Film film = filmStorage.getFilm(filmId);
+        if (film != null) {
+            return filmStorage.getFilm(filmId);
+        } else {
+            throw new FilmNotFoundException("Фильм с таким ID не найден");
+        }
     }
 
     @DeleteMapping
@@ -81,8 +93,8 @@ public class FilmController {
 
     @GetMapping("/popular")
     public List<Film> getTopFilms(
-            @RequestParam(defaultValue = "10", required = false) int topCount) {
-        return filmService.getTopFilms(topCount);
+            @RequestParam(defaultValue = "10", required = false) int count) {
+        return filmService.getTopFilms(count);
     }
 
     private boolean validationFilm(Film film) {

@@ -1,16 +1,31 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 
 public class UserControllerTest {
 
+    private UserStorage userStorage;
+    private UserService userService;
+    private UserController userController;
+
+    @BeforeEach
+    void modelInitialization() {
+        userStorage = new InMemoryUserStorage();
+        userService = new UserService(userStorage);
+        userController = new UserController(userStorage, userService);
+    }
+
     @Test
     void validationUserTestWithGoodData() throws ValidationException {
-        UserController userController = new UserController();
 //  Создание пользователя с корректными данными
         User user1 = User.builder()
                 .id(1)
@@ -28,7 +43,6 @@ public class UserControllerTest {
 
     @Test
     void validationUserTestWithIncorrectEmail() throws ValidationException {
-        UserController userController = new UserController();
         boolean isValidated;
 //  Создание пользователя с некорректным email
         User user2 = User.builder()
@@ -64,7 +78,6 @@ public class UserControllerTest {
 
     @Test
     void validationUserTestWithIncorrectLogin() throws ValidationException {
-        UserController userController = new UserController();
         boolean isValidated;
 //  Создание пользователя с некорректным логином
         User user4 = User.builder()
@@ -100,7 +113,6 @@ public class UserControllerTest {
 
     @Test
     void validationUserTestWithIncorrectUserName() throws ValidationException {
-        UserController userController = new UserController();
         boolean isValidated;
 //  Создание пользователя с некорректным именем
         User user6 = User.builder()
@@ -121,7 +133,6 @@ public class UserControllerTest {
 
     @Test
     void validationUserTestWithIncorrectDateOfBirth() throws ValidationException {
-        UserController userController = new UserController();
         boolean isValidated;
 //  Создание пользователя с некорректной датой рождения
         User user7 = User.builder()

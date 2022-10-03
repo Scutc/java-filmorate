@@ -9,12 +9,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.lang.Long.compare;
 
 @Service
 public class FilmService {
@@ -22,7 +19,7 @@ public class FilmService {
     private UserStorage userStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
     }

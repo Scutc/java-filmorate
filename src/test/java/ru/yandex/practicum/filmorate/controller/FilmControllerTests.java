@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
@@ -12,11 +15,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmControllerTests {
 
+    private FilmController filmController;
+    private FilmStorage filmStorage;
+    private FilmService filmService;
+
+    @BeforeEach
+    void modelInitialization() {
+        filmStorage = new InMemoryFilmStorage();
+        filmService = new FilmService(filmStorage);
+        filmController = new FilmController(filmStorage, filmService);
+    }
+
     @Test
     void validationFilmWithGoodData() throws ValidationException {
-
-        FilmController filmController = new FilmController(new InMemoryFilmStorage());
-
 // Тест создания фильма, соответствующего критериям
         Film film1 = Film.builder()
                 .id(1)
@@ -38,8 +49,6 @@ public class FilmControllerTests {
 
     @Test
     void validationFilmWithLongDescription() throws ValidationException {
-
-        FilmController filmController = new FilmController();
         boolean isValidated;
 // Тест создания фильма с описанием  более 200 символов
         StringBuilder stringBuilder = new StringBuilder();
@@ -65,7 +74,6 @@ public class FilmControllerTests {
 
     @Test
     void validationFilmWithIncorrectDate() throws ValidationException {
-        FilmController filmController = new FilmController();
         boolean isValidated;
 //Создание фильма с некорректной датой
         Film film3 = Film.builder()
@@ -86,7 +94,6 @@ public class FilmControllerTests {
 
     @Test
     void validationFilmWithNegativeDuration() throws ValidationException {
-        FilmController filmController = new FilmController();
         boolean isValidated;
         //Создание фильма с отрицательной продолжительностью
         Film film4 = Film.builder()
@@ -107,7 +114,6 @@ public class FilmControllerTests {
 
     @Test
     void validationFilmWithEmptyName() throws ValidationException {
-        FilmController filmController = new FilmController();
         boolean isValidated;
 //Создание фильма c пустным названием
         Film film5 = Film.builder()

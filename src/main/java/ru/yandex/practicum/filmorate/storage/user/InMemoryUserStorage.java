@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
@@ -16,7 +15,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     private Map<Long, User> users = new HashMap<>();
     private int idGenerator = 0;
-    
+
     @Override
     public User createUser(User user) {
         user.setId(++idGenerator);

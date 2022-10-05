@@ -14,14 +14,9 @@ import java.util.Map;
 
 public class InMemoryUserStorage implements UserStorage{
 
-    private Map<Long, User> users;
-    private int idGenerator;
-
-    public InMemoryUserStorage() {
-        users = new HashMap<>();
-        idGenerator = 0;
-    }
-
+    private Map<Long, User> users = new HashMap<>();
+    private int idGenerator = 0;
+    
     @Override
     public User createUser(User user) {
         user.setId(++idGenerator);

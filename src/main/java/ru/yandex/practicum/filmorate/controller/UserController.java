@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,18 +15,13 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
+@AllArgsConstructor
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     private final UserStorage userStorage;
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserStorage userStorage, UserService userService) {
-        this.userStorage = userStorage;
-        this.userService = userService;
-    }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) throws ValidationException {

@@ -1,19 +1,16 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.user.UserService;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 @Slf4j
+@Component
+
 public class InMemoryUserStorage implements UserStorage{
 
     private Map<Long, User> users;
@@ -28,19 +25,18 @@ public class InMemoryUserStorage implements UserStorage{
     public User createUser(User user) {
         user.setId(++idGenerator);
         users.put(user.getId(), user);
-        log.info("Добавлен пользователь " + user.getId());
         return user;
     }
 
     @Override
     public User updateUser(User user) {
         users.put(user.getId(), user);
-        log.info("Обновлены данные пользователя " + user.getId());
-        return null;
+        return user;
     }
 
     @Override
     public void deleteUser(User user) {
+        users.remove(user);
     }
 
     @Override
@@ -50,7 +46,6 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public List<User> getUsers() {
-        log.info("Запрошен список пользователей: " + users);
         return new ArrayList<>(users.values());
     }
 }

@@ -23,17 +23,6 @@ public class UserService {
     public User addFriend(long userId, long friendId) {
         User user = userStorage.getUser(userId);
         User friend = userStorage.getUser(friendId);
-
-        if (user == null || friend == null) {
-            throw new UserNotFoundException("Пользователь не найден!");
-        }
-
-        if (user.getFriends() == null) {
-            user.setFriends(new HashSet<>());
-        }
-        if (friend.getFriends() == null) {
-            friend.setFriends(new HashSet<>());
-        }
         user.getFriends().add(friendId);
         friend.getFriends().add(userId);
         return friend;
@@ -43,9 +32,6 @@ public class UserService {
         User user = userStorage.getUser(userId);
         User friend = userStorage.getUser(friendId);
 
-        if (user == null || friend == null) {
-            throw new UserNotFoundException("Пользователь не найден!");
-        }
         user.getFriends().remove(friendId);
         friend.getFriends().remove(userId);
         return user;

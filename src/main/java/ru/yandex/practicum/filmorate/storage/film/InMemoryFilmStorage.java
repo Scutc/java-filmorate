@@ -7,8 +7,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
 
-@Component
 @Slf4j
+@Component
+
 public class InMemoryFilmStorage implements FilmStorage{
 
     private Map<Long, Film> films = new HashMap<>();
@@ -19,7 +20,6 @@ public class InMemoryFilmStorage implements FilmStorage{
         film.setId(++idGenerator);
         film.setLikes(new HashSet<>());
         films.put(film.getId(), film);
-        log.info("Добавлен фильм " + film.getName());
         return film;
     }
 
@@ -29,7 +29,6 @@ public class InMemoryFilmStorage implements FilmStorage{
             film.setLikes(new HashSet<>());
         }
         films.put(film.getId(), film);
-        log.info("Обновлены данные фильма " + film.getName());
         return film;
     }
 
@@ -45,7 +44,6 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public List<Film> getFilms() {
-        log.info("Запрошен список фильмов: " + films);
         return new ArrayList<>(films.values());
     }
 

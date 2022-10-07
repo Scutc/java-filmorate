@@ -58,7 +58,7 @@ public class UserServiceTest {
         userService.addFriend(1L, 3L);
         assertEquals(2, userService.getUserFriends(1L).size());
 
-        userService.deleteFriend(1L, 3L);
+        userService.removeFriend(1L, 3L);
         assertEquals(1, userService.getUserFriends(1L).size());
         assertFalse(userService.getUserFriends(1L).contains(3L));
     }

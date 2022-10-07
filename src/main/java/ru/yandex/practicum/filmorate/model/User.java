@@ -18,4 +18,12 @@ public class User {
     private String name;
     private LocalDate birthday;
     private Set<Long> friends;
+
+    public boolean addFriend (Long friendId) {
+        return friends.add(friendId);
+    }
+
+    public boolean removeFriend(Long friendId) {
+        return friends.remove(friendId);
+    }
 }

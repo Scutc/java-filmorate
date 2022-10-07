@@ -144,7 +144,7 @@ public class UserController {
             }
             throw new UserNotFoundException(response.toString());
         }
-        userService.deleteFriend(userId, friendId);
+        userService.removeFriend(userId, friendId);
         log.info("Пользователь " + userId + " удалил из друзей " + friendId);
 
     }

@@ -22,17 +22,17 @@ public class UserService {
     public User addFriend(long userId, long friendId) {
         User user = userStorage.getUser(userId);
         User friend = userStorage.getUser(friendId);
-        user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
+        user.addFriend(friendId);
+        friend.addFriend(userId);
         return friend;
     }
 
-    public User deleteFriend(long userId, long friendId) {
+    public User removeFriend(long userId, long friendId) {
         User user = userStorage.getUser(userId);
         User friend = userStorage.getUser(friendId);
 
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userId);
+        user.removeFriend(friendId);
+        friend.removeFriend(userId);
         return user;
     }
 

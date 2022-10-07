@@ -11,21 +11,18 @@ import java.util.*;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private Map<Long, Film> films = new HashMap<>();
-    private int idGenerator = 0;
+    private Long idGenerator = 0L;
 
     @Override
     public Film createFilm(Film film) {
-        film.setId(++idGenerator);
-        film.setLikes(new HashSet<>());
+        filmCleaningUp(film);
         films.put(film.getId(), film);
         return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        if (film.getLikes() == null) {
-            film.setLikes(new HashSet<>());
-        }
+        filmCleaningUp(film);
         films.put(film.getId(), film);
         return film;
     }
@@ -48,5 +45,15 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film getFilm(Long filmId) {
         return films.get(filmId);
+    }
+
+    private Film filmCleaningUp(final Film film) {
+        if (film.getId() == null || film.getId() == 0L) {
+            film.setId(++idGenerator);
+        }
+        if (film.getLikes() == null) {
+            film.setLikes(new HashSet<>());
+        }
+        return film;
     }
 }

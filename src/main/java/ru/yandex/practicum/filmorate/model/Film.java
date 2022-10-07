@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @Builder
 public class Film {
-    public long id;
+    public Long id;
     @NotBlank(message = "Название фильма не может быть пустым")
     public String name;
     @Size(max = 200, message = "Превышена максимальная длина описания")

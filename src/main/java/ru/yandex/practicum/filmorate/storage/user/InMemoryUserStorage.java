@@ -46,7 +46,7 @@ public class InMemoryUserStorage implements UserStorage {
         return new ArrayList<>(users.values());
     }
 
-    private User userCleaningUp (User user) {
+    private User userCleaningUp (final User user) {
         if (user.getId() == null || user.getId() == 0L) {
             user.setId(++idGenerator);
         }

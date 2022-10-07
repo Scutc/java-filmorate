@@ -36,7 +36,7 @@ public class FilmControllerTests {
     void validationFilmWithGoodData() throws ValidationException {
 // Тест создания фильма, соответствующего критериям
         Film film1 = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Фильм 1")
                 .description("Описание фильма 1")
                 .releaseDate(LocalDate.of(2022, 10, 15))
@@ -63,7 +63,7 @@ public class FilmControllerTests {
         }
 
         Film film2 = Film.builder()
-                .id(2)
+                .id(2L)
                 .name("Фильм 2")
                 .description(stringBuilder.toString())
                 .releaseDate(LocalDate.of(2022, 10, 15))
@@ -83,7 +83,7 @@ public class FilmControllerTests {
         boolean isValidated;
 //Создание фильма с некорректной датой
         Film film3 = Film.builder()
-                .id(3)
+                .id(3L)
                 .name("Фильм 3")
                 .description("Описание фильма 3")
                 .releaseDate(LocalDate.of(1895, 12, 27))
@@ -103,7 +103,7 @@ public class FilmControllerTests {
         boolean isValidated;
         //Создание фильма с отрицательной продолжительностью
         Film film4 = Film.builder()
-                .id(4)
+                .id(4L)
                 .name("Фильм 4")
                 .description("Описание фильма 4")
                 .releaseDate(LocalDate.of(2020, 12, 27))
@@ -123,7 +123,7 @@ public class FilmControllerTests {
         boolean isValidated;
 //Создание фильма c пустным названием
         Film film5 = Film.builder()
-                .id(5)
+                .id(5L)
                 .name("")
                 .description("Описание фильма 5")
                 .releaseDate(LocalDate.of(2020, 12, 27))

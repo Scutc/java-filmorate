@@ -27,7 +27,7 @@ public class UserControllerTest {
     void validationUserTestWithGoodData() throws ValidationException {
 //  Создание пользователя с корректными данными
         User user1 = User.builder()
-                .id(1)
+                .id(1L)
                 .login("user")
                 .name("Dmitry")
                 .email("user@yandex.ru")
@@ -45,7 +45,7 @@ public class UserControllerTest {
         boolean isValidated;
 //  Создание пользователя с некорректным email
         User user2 = User.builder()
-                .id(2)
+                .id(2L)
                 .login("user")
                 .name("Dmitry")
                 .email("")
@@ -60,7 +60,7 @@ public class UserControllerTest {
         assertFalse(isValidated);
 
         User user3 = User.builder()
-                .id(3)
+                .id(3L)
                 .login("user")
                 .name("Dmitry")
                 .email("dddd.yandex.ru")
@@ -80,7 +80,7 @@ public class UserControllerTest {
         boolean isValidated;
 //  Создание пользователя с некорректным логином
         User user4 = User.builder()
-                .id(4)
+                .id(4L)
                 .login("")
                 .name("Dmitry")
                 .email("user@yandex.ru")
@@ -95,7 +95,7 @@ public class UserControllerTest {
         assertFalse(isValidated);
 
         User user5 = User.builder()
-                .id(5)
+                .id(5L)
                 .login("use r")
                 .name("Dmitry")
                 .email("user@yandex.ru")
@@ -115,7 +115,7 @@ public class UserControllerTest {
         boolean isValidated;
 //  Создание пользователя с некорректным именем
         User user6 = User.builder()
-                .id(6)
+                .id(6L)
                 .login("user")
                 .name("")
                 .email("user@yandex.ru")
@@ -135,7 +135,7 @@ public class UserControllerTest {
         boolean isValidated;
 //  Создание пользователя с некорректной датой рождения
         User user7 = User.builder()
-                .id(7)
+                .id(7L)
                 .login("user")
                 .name("Dmitry")
                 .email("user@yandex.ru")

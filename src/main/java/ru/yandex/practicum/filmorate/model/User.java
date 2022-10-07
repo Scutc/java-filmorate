@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @Builder
 public class User {
-    private @NonNull long id;
+    private Long id;
     @Email(message = "Некорректный формат email")
     private String email;
     @NonNull

@@ -31,16 +31,13 @@ public class UserService {
         User user = userStorage.getUser(userId);
         User friend = userStorage.getUser(friendId);
 
-        user.getFriends()
-            .remove(friendId);
-        friend.getFriends()
-              .remove(userId);
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(userId);
         return user;
     }
 
     public List<User> getUserFriends(long userId) {
-        Set<Long> userFriendsId = userStorage.getUser(userId)
-                                             .getFriends();
+        Set<Long> userFriendsId = userStorage.getUser(userId).getFriends();
         List<User> userFriends = new ArrayList<>();
         userFriendsId.forEach(t -> userFriends.add(userStorage.getUser(t)));
         return userFriends;
@@ -48,17 +45,13 @@ public class UserService {
 
     public List<User> getUsersCommonFriends(long userId, long otherUserId) {
         Set<Long> commonFriendsIds;
-        if (userStorage.getUser(userId).getFriends() != null) {
-            commonFriendsIds = userStorage.getUser(userId)
-                                          .getFriends()
-                                          .stream()
-                                          .filter(p2 -> userStorage.getUser(otherUserId)
-                                                                   .getFriends()
-                                                                   .contains(p2))
-                                          .collect(Collectors.toSet());
-        } else {
-            commonFriendsIds = Collections.EMPTY_SET;
-        }
+        commonFriendsIds = userStorage.getUser(userId)
+                                      .getFriends()
+                                      .stream()
+                                      .filter(p2 -> userStorage.getUser(otherUserId)
+                                                               .getFriends()
+                                                               .contains(p2))
+                                      .collect(Collectors.toSet());
         List<User> commonFriends = new ArrayList<>();
         commonFriendsIds.forEach(t -> commonFriends.add(userStorage.getUser(t)));
         return commonFriends;

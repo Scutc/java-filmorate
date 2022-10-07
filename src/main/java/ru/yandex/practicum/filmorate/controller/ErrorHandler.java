@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,8 +26,6 @@ ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleIncorrectParameterException(final UserNotFoundException e, HttpServletRequest request) {
-        System.out.println("Печатаю сюда!!!!");
-        System.out.println(e.getMessage());
         return new ErrorResponse(e.getMessage(), request.getServletPath());
     }
 
@@ -47,7 +44,6 @@ ErrorHandler {
              String errorMessage = error.getDefaultMessage();
              errors.put(fieldName, errorMessage);
          });
-        return ResponseEntity.badRequest()
-                             .body(errors);
+        return ResponseEntity.badRequest().body(errors);
     }
 }

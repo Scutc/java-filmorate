@@ -22,10 +22,8 @@ public class UserService {
     public User addFriend(long userId, long friendId) {
         User user = userStorage.getUser(userId);
         User friend = userStorage.getUser(friendId);
-        user.getFriends()
-            .add(friendId);
-        friend.getFriends()
-              .add(userId);
+        user.getFriends().add(friendId);
+        friend.getFriends().add(userId);
         return friend;
     }
 
@@ -50,8 +48,7 @@ public class UserService {
 
     public List<User> getUsersCommonFriends(long userId, long otherUserId) {
         Set<Long> commonFriendsIds;
-        if (userStorage.getUser(userId)
-                       .getFriends() != null) {
+        if (userStorage.getUser(userId).getFriends() != null) {
             commonFriendsIds = userStorage.getUser(userId)
                                           .getFriends()
                                           .stream()

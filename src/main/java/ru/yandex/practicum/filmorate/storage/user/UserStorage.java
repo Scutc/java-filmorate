@@ -11,7 +11,7 @@ public interface UserStorage {
 
     User getUser(Long userId);
 
-    void deleteUser(User user);
+    boolean deleteUser(User user);
 
     List<User> getUsers();
 }

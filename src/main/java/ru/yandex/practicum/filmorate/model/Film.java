@@ -20,4 +20,12 @@ public class Film {
     @PositiveOrZero(message = "Продолжительность фильма не может быть отрицательной")
     public Long duration;
     private Set<Long> likes;
+
+    public boolean addLike(Long userId) {
+        return likes.add(userId);
+    }
+
+    public boolean removeLike(Long userId) {
+        return likes.remove(userId);
+    }
 }

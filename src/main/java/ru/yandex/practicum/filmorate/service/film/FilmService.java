@@ -13,15 +13,11 @@ public class FilmService {
     private final FilmStorage filmStorage;
 
     public void addLike(long filmId, long userId) {
-        filmStorage.getFilm(filmId)
-                   .getLikes()
-                   .add(userId);
+        filmStorage.getFilm(filmId).addLike(userId);
     }
 
     public void removeLike(long filmId, long userId) {
-        filmStorage.getFilm(filmId)
-                   .getLikes()
-                   .remove(userId);
+        filmStorage.getFilm(filmId).removeLike(userId);
     }
 
     public List<Film> getTopFilms(int topCount) {

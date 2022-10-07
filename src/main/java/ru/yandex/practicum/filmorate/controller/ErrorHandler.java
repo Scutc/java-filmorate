@@ -1,17 +1,16 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
-
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,20 +20,22 @@ ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIncorrectParameterException(final ValidationException e) {
-        return new ErrorResponse(e.getMessage(), e.getPath());
+    public ErrorResponse handleIncorrectParameterException(final ValidationException e, HttpServletRequest request) {
+        return new ErrorResponse(e.getMessage(), request.getServletPath());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleIncorrectParameterException(final UserNotFoundException e) {
-        return new ErrorResponse(e.getMessage(), e.getPath());
+    public ErrorResponse handleIncorrectParameterException(final UserNotFoundException e, HttpServletRequest request) {
+        System.out.println("Печатаю сюда!!!!");
+        System.out.println(e.getMessage());
+        return new ErrorResponse(e.getMessage(), request.getServletPath());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleIncorrectParameterException(final FilmNotFoundException e) {
-        return new ErrorResponse(e.getMessage(), e.getPath());
+    public ErrorResponse handleIncorrectParameterException(final FilmNotFoundException e, HttpServletRequest request) {
+        return new ErrorResponse(e.getMessage(), request.getServletPath());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -36,7 +36,7 @@ public class FilmController {
             log.info("Фильм дробавлен");
         } else {
             log.warn("Фильм не добавлен!");
-            throw new ValidationException("Проверьте корректность введенных данных", "POST/films");
+            throw new ValidationException("Проверьте корректность введенных данных");
         }
         return film;
     }
@@ -46,14 +46,14 @@ public class FilmController {
         log.info("Запрошено обновление фильма " + film);
         if (filmStorage.getFilm(film.getId()) == null) {
             log.warn("Фильм c ID " + film.getId() + " не найден. Данные не обновлены");
-            throw new FilmNotFoundException("Фильм не найден. Данные не обновлены!", "PUT/films");
+            throw new FilmNotFoundException("Фильм не найден. Данные не обновлены!");
         }
         if (validationFilm(film)) {
             filmStorage.updateFilm(film);
             log.info("Фильм обновлен");
         } else {
             log.warn("Фильм не обновлен!");
-            throw new ValidationException("Проверьте корректность введенных данных", "PUT/films");
+            throw new ValidationException("Проверьте корректность введенных данных");
         }
         return film;
     }
@@ -70,7 +70,7 @@ public class FilmController {
         if (film != null) {
             return filmStorage.getFilm(filmId);
         } else {
-            throw new FilmNotFoundException("Фильм с ID " + filmId + " не найден", "GET/films/" + filmId);
+            throw new FilmNotFoundException("Фильм с ID " + filmId + " не найден");
         }
     }
 
@@ -90,12 +90,10 @@ public class FilmController {
 
         log.info("Запрошено добавление лайка для фильма " + filmId + " от пользователя " + userId);
         if (film == null) {
-            throw new FilmNotFoundException("Фильм c ID " + filmId + " не найден!", "PUT/films/" + filmId + "/like/"
-                    + userId);
+            throw new FilmNotFoundException("Фильм c ID " + filmId + " не найден!");
         }
         if (user == null) {
-            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден", "PUT/films/" + filmId
-                    + "/like/" + userId);
+            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден");
         }
         filmService.addLike(filmId, userId);
         log.info("Лайк добавлен");
@@ -109,13 +107,11 @@ public class FilmController {
         log.info("Запрошено удаление лайка для фильма " + filmId + " от пользователя " + userId);
         if (film == null) {
             log.warn("Фильм c ID " + filmId + " не найден!");
-            throw new FilmNotFoundException("Фильм c ID " + filmId + " не найден!", "DELETE/films/" + filmId
-                    + "/like/" + userId);
+            throw new FilmNotFoundException("Фильм c ID " + filmId + " не найден!");
         }
         if (user == null) {
             log.warn("Пользователь с ID " + userId + " не найден");
-            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден", "DELETE/films/"
-                    + filmId + "/like/" + userId);
+            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден");
         }
         filmService.removeLike(filmId, userId);
         log.info("Лайк удален");

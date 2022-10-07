@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.util.Set;
@@ -19,7 +20,7 @@ public class User {
     private LocalDate birthday;
     private Set<Long> friends;
 
-    public boolean addFriend (Long friendId) {
+    public boolean addFriend(Long friendId) {
         return friends.add(friendId);
     }
 

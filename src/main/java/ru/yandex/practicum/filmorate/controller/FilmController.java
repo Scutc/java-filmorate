@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -69,7 +70,7 @@ public class FilmController {
         if (film != null) {
             return filmStorage.getFilm(filmId);
         } else {
-            throw new FilmNotFoundException("Фильм с ID " + filmId + " не найден", "GET/films/"+filmId);
+            throw new FilmNotFoundException("Фильм с ID " + filmId + " не найден", "GET/films/" + filmId);
         }
     }
 
@@ -89,12 +90,12 @@ public class FilmController {
 
         log.info("Запрошено добавление лайка для фильма " + filmId + " от пользователя " + userId);
         if (film == null) {
-            throw new FilmNotFoundException("Фильм c ID " + filmId + " не найден!", "PUT/films/" + filmId
-                    + "/like/" + userId);
+            throw new FilmNotFoundException("Фильм c ID " + filmId + " не найден!", "PUT/films/" + filmId + "/like/"
+                    + userId);
         }
         if (user == null) {
-            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден", "PUT/films/"
-                    + filmId + "/like/" + userId);
+            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден", "PUT/films/" + filmId
+                    + "/like/" + userId);
         }
         filmService.addLike(filmId, userId);
         log.info("Лайк добавлен");
@@ -108,8 +109,8 @@ public class FilmController {
         log.info("Запрошено удаление лайка для фильма " + filmId + " от пользователя " + userId);
         if (film == null) {
             log.warn("Фильм c ID " + filmId + " не найден!");
-            throw new FilmNotFoundException("Фильм c ID " + filmId + " не найден!", "DELETE/films/"
-                    + filmId + "/like/" + userId);
+            throw new FilmNotFoundException("Фильм c ID " + filmId + " не найден!", "DELETE/films/" + filmId
+                    + "/like/" + userId);
         }
         if (user == null) {
             log.warn("Пользователь с ID " + userId + " не найден");
@@ -121,10 +122,9 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms(
-            @RequestParam(defaultValue = "10", required = false) int count) {
-        log.info("Запрошен список фильмов с наибольшим количеством лайков. " +
-                "Ограничитель количества фильмов равен " + count);
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) int count) {
+        log.info("Запрошен список фильмов с наибольшим количеством лайков. " + "Ограничитель количества фильмов равен "
+                + count);
         return filmService.getTopFilms(count);
     }
 

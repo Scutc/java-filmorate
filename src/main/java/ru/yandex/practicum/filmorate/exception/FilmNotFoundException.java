@@ -1,11 +1,14 @@
 package ru.yandex.practicum.filmorate.exception;
 
-public class FilmNotFoundException extends RuntimeException{
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+public class FilmNotFoundException extends ResponseStatusException {
 
     private final String path;
 
     public FilmNotFoundException(String message, String path) {
-        super(message);
+        super(HttpStatus.valueOf(message));
         this.path = path;
     }
 

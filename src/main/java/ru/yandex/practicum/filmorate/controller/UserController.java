@@ -35,7 +35,7 @@ public class UserController {
             log.info("Добавлен пользователь " + user);
         } else {
             log.warn("Пользователь не добавлен");
-            throw new ValidationException("Проверьте корректность введенных данных","POST/users");
+            throw new ValidationException("Проверьте корректность введенных данных", "POST/users");
         }
         return user;
     }
@@ -45,8 +45,7 @@ public class UserController {
         log.info("Запрошено обновление пользователя" + user);
         if (userStorage.getUser(user.getId()) == null) {
             log.warn("Пользователь с ID " + user.getId() + " не найден. Данные не обновлены!");
-            throw new UserNotFoundException("Пользователь с ID " + user.getId()
-                    + " не найден. Данные не обновлены!", "PUT/users");
+            throw new UserNotFoundException("Пользователь с ID " + user.getId() + " не найден. Данные не обновлены!", "PUT/users");
         }
         if (user.getFriends() == null) {
             user.setFriends(new HashSet<>());
@@ -56,7 +55,7 @@ public class UserController {
             log.info("Данные пользователя обновлены " + user);
         } else {
             log.warn("Данные пользователя не обновлены, т.к. не пройдена валидация " + user);
-            throw new ValidationException("Проверьте корректность введенных данных","PUT/users");
+            throw new ValidationException("Проверьте корректность введенных данных", "PUT/users");
         }
         return user;
     }
@@ -76,7 +75,7 @@ public class UserController {
             return userStorage.getUser(userId);
         } else {
             log.warn("Пользователь с ID " + userId + " не найден");
-            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден","GET/users/"+userId);
+            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден", "GET/users/" + userId);
         }
     }
 
@@ -97,8 +96,7 @@ public class UserController {
                 log.warn("Пользователь с ID " + otherUserId + " не найден. ");
                 response.append("Пользователь с ID ").append(otherUserId).append("не найден. ");
             }
-            throw new UserNotFoundException(response.toString(), "GET/users/"
-                    + userId + "/friends/common/" + otherUserId);
+            throw new UserNotFoundException(response.toString(), "GET/users/" + userId + "/friends/common/" + otherUserId);
         }
         return userService.getUsersCommonFriends(userId, otherUserId);
     }
@@ -107,7 +105,7 @@ public class UserController {
     public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
         User user = userStorage.getUser(userId);
         User friend = userStorage.getUser(friendId);
-        log.info("Пользователем " + userId + " запрошено добавление в друзья пользователя " + friendId );
+        log.info("Пользователем " + userId + " запрошено добавление в друзья пользователя " + friendId);
 
         if (user == null || friend == null) {
             StringBuilder response = new StringBuilder();
@@ -155,8 +153,7 @@ public class UserController {
     public List<User> getUserFriends(@PathVariable long userId) {
         log.info("Запрошен список друзей у пользователя " + userId);
         if (userStorage.getUser(userId) == null) {
-            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден","GET/users/"
-                    + userId + "/friends");
+            throw new UserNotFoundException("Пользователь с ID " + userId + " не найден", "GET/users/" + userId + "/friends");
         }
         return userService.getUserFriends(userId);
     }

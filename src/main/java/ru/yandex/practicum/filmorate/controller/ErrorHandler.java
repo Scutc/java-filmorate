@@ -11,11 +11,13 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
+
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class ErrorHandler {
+public class
+ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -40,10 +42,11 @@ public class ErrorHandler {
     public ResponseEntity handleValidationException(final MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return ResponseEntity.badRequest().body(errors);
+             String fieldName = ((FieldError) error).getField();
+             String errorMessage = error.getDefaultMessage();
+             errors.put(fieldName, errorMessage);
+         });
+        return ResponseEntity.badRequest()
+                             .body(errors);
     }
 }

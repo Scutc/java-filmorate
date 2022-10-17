@@ -1,2 +1,3 @@
 # java-filmorate
-Template repository for Filmorate project.
+
+![Filmorate DB ER-chart] (https://github.com/Scutc/java-filmorate/blob/main/Filmorate%20DB_Kryuchkov.png)

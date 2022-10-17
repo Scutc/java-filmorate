@@ -33,11 +33,9 @@
       SELECT
          uf1.friend_id
       FROM user_friends uf1
-      WHERE uf1.user_id = 1 
-      > ID первого пользователя
+      WHERE uf1.user_id = 1 _-- ID первого пользователя_
       AND uf1.friend_id IN (
          SELECT friend_id
          FROM user_friends uf2
-         WHERE uf2.user_id = 2 
-      > ID второго пользователя
+         WHERE uf2.user_id = 2 _-- ID второго пользователя_
        )

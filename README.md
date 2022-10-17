@@ -1,3 +1,3 @@
 # java-filmorate
 
-![Filmorate DB ER-chart](/main/Filmorate%20DB_Kryuchkov.png)
+![Filmorate DB ER-chart](/Filmorate%20DB_Kryuchkov.png)

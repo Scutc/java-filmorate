@@ -10,11 +10,32 @@
   
         SELECT * FROM films;
 
-
   **2. Получение всех пользователей:**
-
+  
+       SELECT * FROM users
 
   **3. Получение 10 самых популярных фильмов:**
-
+  
+       SELECT
+          fl.film_id as film_id,
+          fl.name as name,
+          COUNT(uf.user_id) as cnt
+       FROM films fl
+       INNER JOIN user_films uf ON uf.film_id = fl.film_id 
+       GROUP BY
+          film_id,
+          name
+       ORDER BY cnt DESC
+       LIMIT 10
 
   **4. Список общих ПОДТВЕРЖДЕННЫХ друзей:**
+  
+      SELECT
+         uf1.friend_id
+      FROM user_friends uf1
+      WHERE uf1.user_id = 1 > ID первого пользователя
+      AND uf1.friend_id IN (
+         SELECT friend_id
+         FROM user_friends uf2
+         WHERE uf2.user_id = 2 > ID второго пользователя)
+       )

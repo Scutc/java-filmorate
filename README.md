@@ -34,10 +34,12 @@
          uf1.friend_id
       FROM user_friends uf1
       WHERE uf1.user_id = 1 -- ID первого пользователя
+      AND uf1.friendship_status_id = 1 -- 1 означает подтвержденный статус 
       AND uf1.friend_id IN (
          SELECT friend_id
          FROM user_friends uf2
          WHERE uf2.user_id = 2 -- ID второго пользователя
+         uf2.friendship_status_id = 1 -- 1 означает подтвержденный статус 
        )
        
     

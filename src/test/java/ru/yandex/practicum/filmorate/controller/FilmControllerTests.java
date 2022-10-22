@@ -1,21 +1,42 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 
 public class FilmControllerTests {
 
+    private FilmController filmController;
+    private FilmStorage filmStorage;
+    private UserStorage userStorage;
+    private FilmService filmService;
+    private UserService userService;
+
+    @BeforeEach
+    void modelInitialization() {
+        filmStorage = new InMemoryFilmStorage();
+        userStorage = new InMemoryUserStorage();
+        userService = new UserService(userStorage);
+        filmService = new FilmService(filmStorage);
+        filmController = new FilmController(filmStorage, filmService, userStorage);
+    }
+
     @Test
     void validationFilmWithGoodData() throws ValidationException {
-        FilmController filmController = new FilmController();
-
 // Тест создания фильма, соответствующего критериям
         Film film1 = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Фильм 1")
                 .description("Описание фильма 1")
                 .releaseDate(LocalDate.of(2022, 10, 15))
@@ -34,8 +55,6 @@ public class FilmControllerTests {
 
     @Test
     void validationFilmWithLongDescription() throws ValidationException {
-
-        FilmController filmController = new FilmController();
         boolean isValidated;
 // Тест создания фильма с описанием  более 200 символов
         StringBuilder stringBuilder = new StringBuilder();
@@ -44,7 +63,7 @@ public class FilmControllerTests {
         }
 
         Film film2 = Film.builder()
-                .id(2)
+                .id(2L)
                 .name("Фильм 2")
                 .description(stringBuilder.toString())
                 .releaseDate(LocalDate.of(2022, 10, 15))
@@ -61,11 +80,10 @@ public class FilmControllerTests {
 
     @Test
     void validationFilmWithIncorrectDate() throws ValidationException {
-        FilmController filmController = new FilmController();
         boolean isValidated;
 //Создание фильма с некорректной датой
         Film film3 = Film.builder()
-                .id(3)
+                .id(3L)
                 .name("Фильм 3")
                 .description("Описание фильма 3")
                 .releaseDate(LocalDate.of(1895, 12, 27))
@@ -82,11 +100,10 @@ public class FilmControllerTests {
 
     @Test
     void validationFilmWithNegativeDuration() throws ValidationException {
-        FilmController filmController = new FilmController();
         boolean isValidated;
         //Создание фильма с отрицательной продолжительностью
         Film film4 = Film.builder()
-                .id(4)
+                .id(4L)
                 .name("Фильм 4")
                 .description("Описание фильма 4")
                 .releaseDate(LocalDate.of(2020, 12, 27))
@@ -103,11 +120,10 @@ public class FilmControllerTests {
 
     @Test
     void validationFilmWithEmptyName() throws ValidationException {
-        FilmController filmController = new FilmController();
         boolean isValidated;
 //Создание фильма c пустным названием
         Film film5 = Film.builder()
-                .id(5)
+                .id(5L)
                 .name("")
                 .description("Описание фильма 5")
                 .releaseDate(LocalDate.of(2020, 12, 27))

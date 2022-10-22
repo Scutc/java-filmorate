@@ -6,16 +6,25 @@ import lombok.NonNull;
 
 import javax.validation.constraints.Email;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
 public class User {
+    private Long id;
+    @Email(message = "Некорректный формат email")
+    private String email;
     @NonNull
-    private int id;
-    @Email
-    String email;
-    @NonNull
-    String login;
-    String name;
-    LocalDate birthday;
+    private String login;
+    private String name;
+    private LocalDate birthday;
+    private Set<Long> friends;
+
+    public boolean addFriend(Long friendId) {
+        return friends.add(friendId);
+    }
+
+    public boolean removeFriend(Long friendId) {
+        return friends.remove(friendId);
+    }
 }

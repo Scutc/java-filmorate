@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -53,7 +56,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        return null;
+        deleteUser(user);
+        return createUser(user);
     }
 
     @Override
@@ -85,15 +89,33 @@ public class UserDbStorage implements UserStorage {
         return new HashSet<>(friends);
     }
 
-
     @Override
     public boolean deleteUser(User user) {
-        return false;
+        String sqlQuery = "DELETE FROM users WHERE user_id = ?";
+        if (getUser(user.getId()) != null) {
+            jdbcTemplate.update(sqlQuery, user.getId());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public List<User> getUsers() {
-        return null;
+        String sql = "SELECT * FROM users";
+        List<User> userRows = jdbcTemplate.query(sql, (rs, rowNum) -> mapUserFromRow(rs));
+        return userRows;
+    }
+
+    private User mapUserFromRow(ResultSet rs) throws SQLException {
+        return User.builder()
+                   .id(rs.getLong("user_id"))
+                   .email(rs.getString("email"))
+                   .login(Objects.requireNonNull(rs.getString("login")))
+                   .name(rs.getString("name"))
+                   .birthday(Objects.requireNonNull(rs.getDate("birthday")).toLocalDate())
+                   .friends(getFriendsFromDb(rs.getLong("user_id")))
+                   .build();
     }
 
     private User userCleaningUp (final User user) {

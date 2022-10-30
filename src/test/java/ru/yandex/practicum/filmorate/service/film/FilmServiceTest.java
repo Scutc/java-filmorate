@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -18,6 +20,8 @@ public class FilmServiceTest {
 
     private FilmStorage filmStorage;
     private FilmService filmService;
+
+    @Qualifier("userDbStorage")
     private UserStorage userStorage;
 
     @BeforeEach

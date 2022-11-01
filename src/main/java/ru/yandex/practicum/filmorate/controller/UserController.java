@@ -23,6 +23,7 @@ public class UserController {
 
     @Qualifier("userDbStorage")
     private final UserStorage userStorage;
+    @Qualifier("userDbService")
     private final UserService userService;
 
     @PostMapping

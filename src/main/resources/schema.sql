@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS USERS_FRIENDS
     USER_ID              BIGINT not null
     references USERS,
     FRIEND_ID            BIGINT not null
-    references FILMS,
+    references USERS,
     FRIENDSHIP_STATUS_ID INTEGER
     references FRIENDSHIP_STATUS,
     LAST_UPDATE          DATE,

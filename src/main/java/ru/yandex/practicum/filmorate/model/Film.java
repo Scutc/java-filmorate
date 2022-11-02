@@ -12,15 +12,17 @@ import java.util.Set;
 @Data
 @Builder
 public class Film {
-    public Long id;
+    private Long id;
     @NotBlank(message = "Название фильма не может быть пустым")
-    public String name;
+    private String name;
     @Size(max = 200, message = "Превышена максимальная длина описания")
-    public String description;
-    public LocalDate releaseDate;
+    private String description;
+    private LocalDate releaseDate;
     @PositiveOrZero(message = "Продолжительность фильма не может быть отрицательной")
-    public Long duration;
+    private Long duration;
     private Set<Long> likes;
+    private Mpa mpa;
+    private Set<Long> genres;
 
     public boolean addLike(Long userId) {
         return likes.add(userId);

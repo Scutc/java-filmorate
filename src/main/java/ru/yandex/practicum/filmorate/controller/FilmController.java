@@ -26,6 +26,7 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
 
+    @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
     private final FilmService filmService;
 

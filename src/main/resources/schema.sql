@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS GENRES
 CREATE TABLE IF NOT EXISTS FILMS_GENRES
 (
     FILM_ID     BIGINT
-    references FILMS,
+    references FILMS ON DELETE CASCADE,
     GENRE_ID    INTEGER
     references GENRES,
     LAST_UPDATE DATE
@@ -74,9 +74,9 @@ CREATE TABLE IF NOT EXISTS USERS
 CREATE TABLE IF NOT EXISTS USERS_FILMS
 (
     USER_ID     BIGINT not null
-    references USERS,
+    references USERS ON DELETE CASCADE,
     FILM_ID     BIGINT not null
-    references FILMS,
+    references FILMS ON DELETE CASCADE,
     LAST_UPDATE DATE,
     primary key (USER_ID, FILM_ID)
     );
@@ -84,9 +84,9 @@ CREATE TABLE IF NOT EXISTS USERS_FILMS
 CREATE TABLE IF NOT EXISTS USERS_FRIENDS
 (
     USER_ID              BIGINT not null
-    references USERS,
+    references USERS ON DELETE CASCADE,
     FRIEND_ID            BIGINT not null
-    references USERS,
+    references USERS ON DELETE CASCADE,
     FRIENDSHIP_STATUS_ID INTEGER
     references FRIENDSHIP_STATUS,
     LAST_UPDATE          DATE,

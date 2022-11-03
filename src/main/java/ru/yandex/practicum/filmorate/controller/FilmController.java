@@ -39,7 +39,7 @@ public class FilmController {
 
         if (validationFilm(film)) {
             filmStorage.createFilm(film);
-            log.info("Фильм дробавлен");
+            log.info("Добавлен фильм: " + film.getId() + " " + film.getName());
         } else {
             log.warn("Фильм не добавлен!");
             throw new ValidationException("Проверьте корректность введенных данных");
@@ -152,6 +152,10 @@ public class FilmController {
         if (film.getDuration() < 0) {
             isValidated = false;
             log.warn("Отрицательная продолжительность фильма: " + film.getDuration());
+        }
+        if (film.getMpa() == null) {
+            isValidated = false;
+            log.warn("Не задане MPA-рейтинг");
         }
         return isValidated;
     }

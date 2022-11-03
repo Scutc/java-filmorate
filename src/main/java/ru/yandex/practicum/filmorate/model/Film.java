@@ -22,7 +22,7 @@ public class Film {
     private Long duration;
     private Set<Long> likes;
     private Mpa mpa;
-    private Set<Long> genres;
+    private Set<Genre> genres;
 
     public boolean addLike(Long userId) {
         return likes.add(userId);

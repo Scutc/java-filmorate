@@ -28,6 +28,7 @@ public class FilmController {
 
     @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
+    @Qualifier("filmDbService")
     private final FilmService filmService;
 
     @Qualifier("userDbStorage")

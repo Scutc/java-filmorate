@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -40,6 +41,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
+    }
+
+    @Override
+    public List<Film> getFilms(List<Long> filmsId) {
+        return filmsId.stream()
+                .map(t -> films.get(t))
+                .collect(Collectors.toList());
     }
 
     @Override

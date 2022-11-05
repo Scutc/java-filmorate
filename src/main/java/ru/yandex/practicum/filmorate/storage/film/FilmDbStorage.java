@@ -158,6 +158,12 @@ public class FilmDbStorage implements FilmStorage{
         return filmRows;
     }
 
+    public List<Film> getFilms(List<Long> filmsId) {
+        String sql = "SELECT * FROM films WHERE film_id IN ?";
+        List<Film> filmRows = jdbcTemplate.query(sql, (rs, rowNum) -> mapFilmFromRow(rs), filmsId);
+        return filmRows;
+    }
+
     private Film mapFilmFromRow(ResultSet rs) throws SQLException {
         Film film = Film.builder()
                         .id(rs.getLong("film_id"))

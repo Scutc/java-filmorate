@@ -14,4 +14,6 @@ public interface FilmStorage {
     boolean deleteFilm(Film film);
 
     List<Film> getFilms();
+
+    List<Film> getFilms(List<Long> filmsId);
 }

@@ -63,19 +63,10 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getUser(Long userId) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, userId);
-
-        if (userRows.next()) {
-            User user = User.builder()
-                            .id(userRows.getLong("user_id"))
-                            .email(userRows.getString("email"))
-                            .login(Objects.requireNonNull(userRows.getString("login")))
-                            .name(userRows.getString("name"))
-                            .birthday(Objects.requireNonNull(userRows.getDate("birthday")).toLocalDate())
-                            .friends(getFriendsFromDb(userId))
-                            .build();
-
-            log.info("Найден пользователь: {} {}", user.getId(), user.getLogin());
+        List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> mapUserFromRow(rs), userId);
+        if (users.size() >0 ) {
+            User user = users.get(0);
+            log.info("Найден пользователь: {} {}", userId, user.getLogin());
             return user;
         } else {
             log.info("Пользователь с идентификатором {} не найден.", userId);

@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
-import ru.yandex.practicum.filmorate.model.Mpa;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;

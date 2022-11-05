@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.MpaDbStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,11 +22,15 @@ import java.util.*;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final MpaDbStorage mpaDbStorage;
+    private final GenreDbStorage genreDbStorage;
     private Long idGenerator;
 
     //  Аналогично UsareStorage - пришлось отойти от заветов Lombok чтобы вычислить максимальный айдишник фильма
-    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaDbStorage mpaDbStorage, GenreDbStorage genreDbStorage) {
         this.jdbcTemplate = jdbcTemplate;
+        this.mpaDbStorage = mpaDbStorage;
+        this.genreDbStorage = genreDbStorage;
         idGenerator = findMaxFilmId();
     }
 
@@ -81,20 +87,9 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getFilm(Long filmId) {
         String sql = "SELECT * FROM films WHERE film_id = ?";
-        SqlRowSet filmsRows = jdbcTemplate.queryForRowSet(sql, filmId);
-
-        if (filmsRows.next()) {
-            Film film = Film.builder()
-                            .id(filmsRows.getLong("film_id"))
-                            .name(filmsRows.getString("name"))
-                            .description(filmsRows.getString("description"))
-                            .releaseDate(filmsRows.getDate("release_date").toLocalDate())
-                            .duration(filmsRows.getLong("duration"))
-                            .mpa(getMpa(filmId))
-                            .likes(getLikes(filmId))
-                            .genres(getGenres(filmId))
-                            .build();
-
+        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> mapFilmFromRow(rs), filmId);
+        if (films.size() > 0) {
+            Film film = films.get(0);
             log.info("Найден фильм: {} {}", film.getId(), film.getName());
             return film;
         } else {

@@ -1,24 +1,38 @@
 package ru.yandex.practicum.filmorate.service.user;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.time.LocalDate;
 import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceTest {
 
-    private UserStorage userStorage;
-    private UserService userService;
+    @Qualifier("userDbStorage")
+    private final UserStorage userStorage;
+    @Qualifier("userDbService")
+    private final UserService userService;
+    private final JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void userStorageTestsInitialization() {
-        userStorage = new InMemoryUserStorage();
-        userService = new UserService(userStorage);
+        jdbcTemplate.update("DELETE FROM USERS_FRIENDS");
+        jdbcTemplate.update("DELETE FROM USERS_FILMS");
+        jdbcTemplate.update("DELETE FROM USERS");
+        jdbcTemplate.update("DELETE FROM FILMS_GENRES");
+        jdbcTemplate.update("DELETE FROM FILMS");
 
         User user1 = User.builder()
                          .id(1L)
@@ -54,7 +68,6 @@ public class UserServiceTest {
     @Test
     void addGetDeleteFriendTest() {
         userService.addFriend(1L, 2L);
-        userService.addFriend(1L, 2L);
         userService.addFriend(1L, 3L);
         assertEquals(2, userService.getUserFriends(1L).size());
 
@@ -66,12 +79,9 @@ public class UserServiceTest {
     @Test
     void getUsersCommonFriends() {
         userService.addFriend(1L, 2L);
-        userService.addFriend(1L, 2L);
         userService.addFriend(1L, 3L);
         userService.addFriend(3L, 2L);
 
         assertEquals(2L, userService.getUsersCommonFriends(1L, 3L).get(0).getId());
     }
-
-
 }

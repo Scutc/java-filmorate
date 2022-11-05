@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Qualifier("InMemoryFilmService")
-public class InMemoryFilmService {
+public class InMemoryFilmService implements FilmService {
     @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
 

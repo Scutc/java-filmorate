@@ -1,10 +1,16 @@
 package ru.yandex.practicum.filmorate.service.film;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
@@ -15,20 +21,26 @@ import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FilmServiceTest {
 
-    private FilmStorage filmStorage;
-    private FilmService filmService;
-
+    @Qualifier("filmDbStorage")
+    private final FilmStorage filmStorage;
+    @Qualifier("filmDbService")
+    private final FilmService filmService;
     @Qualifier("userDbStorage")
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
+    private final JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void testInitialization() {
-        filmStorage = new InMemoryFilmStorage();
-        filmService = new FilmService(filmStorage);
-        userStorage = new InMemoryUserStorage();
+        jdbcTemplate.update("DELETE FROM USERS_FRIENDS");
+        jdbcTemplate.update("DELETE FROM USERS_FILMS");
+        jdbcTemplate.update("DELETE FROM USERS");
+        jdbcTemplate.update("DELETE FROM FILMS_GENRES");
+        jdbcTemplate.update("DELETE FROM FILMS");
 
         Film film1 = Film.builder()
                          .id(1L)
@@ -37,6 +49,8 @@ public class FilmServiceTest {
                          .releaseDate(LocalDate.of(2020, 10, 10))
                          .duration(100L)
                          .likes(new HashSet<>())
+                         .mpa(Mpa.builder().id(1).build())
+                         .genres(new HashSet<>())
                          .build();
 
         filmStorage.createFilm(film1);
@@ -44,10 +58,12 @@ public class FilmServiceTest {
         Film film2 = Film.builder()
                          .id(2L)
                          .name("Фильм 2")
-                         .description("Описание 2")
-                         .releaseDate(LocalDate.of(2022, 10, 10))
-                         .duration(90L)
+                         .description("Описание")
+                         .releaseDate(LocalDate.of(2019, 10, 10))
+                         .duration(100L)
                          .likes(new HashSet<>())
+                         .mpa(Mpa.builder().id(1).build())
+                         .genres(new HashSet<>())
                          .build();
         filmStorage.createFilm(film2);
 
@@ -87,6 +103,6 @@ public class FilmServiceTest {
         filmService.addLike(1L, 2L);
         filmService.addLike(1L, 1L);
         filmService.addLike(2L, 1L);
-        assertEquals(1L, filmService.getTopFilms(1).get(0).id);
+        assertEquals(1L, filmService.getTopFilms(1).get(0).getId());
     }
 }

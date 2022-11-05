@@ -2,14 +2,12 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -117,11 +115,11 @@ public class UserController {
 
             if (user == null) {
                 log.warn("Пользователь с ID " + userId + " не найден. ");
-                response.append("Пользователь с ID " + userId + " не найден. ");
+                response.append("Пользователь с ID ").append(userId).append(" не найден. ");
             }
             if (friend == null) {
                 log.warn(("Друг с ID " + friendId + " не найден. "));
-                response.append("Друг с ID " + friendId + " не найден. ");
+                response.append("Друг с ID ").append(friendId).append(" не найден. ");
             }
             throw new UserNotFoundException(response.toString());
         }
@@ -141,11 +139,11 @@ public class UserController {
 
             if (user == null) {
                 log.warn("Пользователь с ID " + userId + "не найден. ");
-                response.append("Пользователь с ID " + userId + "не найден. ");
+                response.append("Пользователь с ID ").append(userId).append("не найден. ");
             }
             if (friend == null) {
                 log.warn("Друг с ID " + friendId + " не найден. ");
-                response.append("Друг с ID " + friendId + " не найден. ");
+                response.append("Друг с ID ").append(friendId).append(" не найден. ");
             }
             throw new UserNotFoundException(response.toString());
         }

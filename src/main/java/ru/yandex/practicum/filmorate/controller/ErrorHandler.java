@@ -36,13 +36,13 @@ ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleIncorrectParameterException (final GenreNotFoundException e, HttpServletRequest request) {
+    public ErrorResponse handleIncorrectParameterException(final GenreNotFoundException e, HttpServletRequest request) {
         return new ErrorResponse(e.getMessage(), request.getServletPath());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleIncorrectParameterException (final MpaNotFoundException e, HttpServletRequest request) {
+    public ErrorResponse handleIncorrectParameterException(final MpaNotFoundException e, HttpServletRequest request) {
         return new ErrorResponse(e.getMessage(), request.getServletPath());
     }
 
@@ -51,10 +51,10 @@ ErrorHandler {
     public ResponseEntity handleValidationException(final MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach((error) -> {
-             String fieldName = ((FieldError) error).getField();
-             String errorMessage = error.getDefaultMessage();
-             errors.put(fieldName, errorMessage);
-         });
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
         return ResponseEntity.badRequest().body(errors);
     }
 }

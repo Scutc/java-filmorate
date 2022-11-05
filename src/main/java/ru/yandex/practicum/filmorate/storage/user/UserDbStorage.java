@@ -1,16 +1,10 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -33,7 +27,7 @@ public class UserDbStorage implements UserStorage {
         this.idGenerator = findMaxUserId();
     }
 
-    private Long findMaxUserId () {
+    private Long findMaxUserId() {
         String sqlQuery = "SELECT MAX(user_id) AS max_user_id FROM users";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sqlQuery);
         if (userRows.next()) {
@@ -64,7 +58,7 @@ public class UserDbStorage implements UserStorage {
     public User getUser(Long userId) {
         String sql = "SELECT * FROM users WHERE user_id = ?";
         List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> mapUserFromRow(rs), userId);
-        if (users.size() >0 ) {
+        if (users.size() > 0) {
             User user = users.get(0);
             log.info("Найден пользователь: {} {}", userId, user.getLogin());
             return user;
@@ -94,8 +88,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getUsers() {
         String sql = "SELECT * FROM users";
-        List<User> userRows = jdbcTemplate.query(sql, (rs, rowNum) -> mapUserFromRow(rs));
-        return userRows;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> mapUserFromRow(rs));
     }
 
     private User mapUserFromRow(ResultSet rs) throws SQLException {
@@ -109,7 +102,7 @@ public class UserDbStorage implements UserStorage {
                    .build();
     }
 
-    private User userCleaningUp (final User user) {
+    private User userCleaningUp(final User user) {
         if (user.getId() == null || user.getId() == 0L) {
             user.setId(++idGenerator);
         }

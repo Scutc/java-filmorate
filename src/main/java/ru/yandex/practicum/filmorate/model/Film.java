@@ -2,14 +2,11 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Data
 @Builder

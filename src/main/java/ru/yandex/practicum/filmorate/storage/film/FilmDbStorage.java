@@ -14,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component("filmDbStorage")
@@ -33,7 +32,6 @@ public class FilmDbStorage implements FilmStorage {
         idGenerator = findMaxFilmId();
     }
 
-
     @Override
     public Film createFilm(Film film) {
         String sqlQuery = "INSERT INTO FILMS (film_id, name, description, release_date, duration, last_update, category_id)" +
@@ -44,9 +42,8 @@ public class FilmDbStorage implements FilmStorage {
                 film.getDuration(), LocalDateTime.now(), film.getMpa().getId());
         Set<Genre> genres = film.getGenres();
         if (genres != null) {
-            Iterator<Genre> iterator = genres.iterator();
-            while (iterator.hasNext()) {
-                insertFilmGenres(film.getId(), iterator.next().getId());
+            for (Genre genre : genres) {
+                insertFilmGenres(film.getId(), genre.getId());
             }
         }
         return film;
@@ -147,33 +144,30 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getFilms() {
         String sql = "SELECT * FROM films";
-        List<Film> filmRows = jdbcTemplate.query(sql, (rs, rowNum) -> mapFilmFromRow(rs));
-        return filmRows;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> mapFilmFromRow(rs));
     }
 
     @Override
     public List<Film> getFilms(List<Long> filmsId) {
         String inSql = String.join(",", Collections.nCopies(filmsId.size(), "?"));
 
-        List<Film> films = jdbcTemplate.query(
+        return jdbcTemplate.query(
                 String.format("SELECT * FROM films WHERE film_id IN (%s)", inSql),
                 (rs, rowNum) -> mapFilmFromRow(rs),
                 filmsId.toArray());
-        return films;
     }
 
 
     private Film mapFilmFromRow(ResultSet rs) throws SQLException {
-        Film film = Film.builder()
-                        .id(rs.getLong("film_id"))
-                        .name(rs.getString("name"))
-                        .description(rs.getString("description"))
-                        .releaseDate(rs.getDate("release_date").toLocalDate())
-                        .duration(rs.getLong("duration"))
-                        .mpa(getMpa(rs.getLong("film_id")))
-                        .likes(getLikes(rs.getLong("film_id")))
-                        .genres(getGenres(rs.getLong("film_id")))
-                        .build();
-        return film;
+        return Film.builder()
+                   .id(rs.getLong("film_id"))
+                   .name(rs.getString("name"))
+                   .description(rs.getString("description"))
+                   .releaseDate(rs.getDate("release_date").toLocalDate())
+                   .duration(rs.getLong("duration"))
+                   .mpa(getMpa(rs.getLong("film_id")))
+                   .likes(getLikes(rs.getLong("film_id")))
+                   .genres(getGenres(rs.getLong("film_id")))
+                   .build();
     }
 }

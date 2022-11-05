@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,7 +32,8 @@ public class FilmDbService implements FilmService {
 
     @Override
     public List<Film> getTopFilms(int topCount) {
-        String sqlQuery = "SELECT fl.FILM_ID, count(DISTINCT uf.USER_ID) as cnt FROM FILMS fl LEFT JOIN USERS_FILMS uf ON fl.FILM_ID = uf.FILM_ID " +
+        String sqlQuery = "SELECT fl.FILM_ID, count(DISTINCT uf.USER_ID) as cnt FROM FILMS fl " +
+                "LEFT JOIN USERS_FILMS uf ON fl.FILM_ID = uf.FILM_ID " +
                 "GROUP BY fl.FILM_ID ORDER BY cnt DESC LIMIT ?";
         List<Long> filmRows = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getLong("film_id"), topCount);
         return filmStorage.getFilms(filmRows);

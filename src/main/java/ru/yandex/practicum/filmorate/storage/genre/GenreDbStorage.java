@@ -3,11 +3,8 @@ package ru.yandex.practicum.filmorate.storage.genre;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -39,10 +36,9 @@ public class GenreDbStorage {
     }
 
     private Genre mapGenreFromRow(ResultSet rs) throws SQLException {
-        Genre genre = Genre.builder()
-                        .id(rs.getInt("genre_id"))
-                        .name(rs.getString("name"))
-                        .build();
-        return genre;
+        return Genre.builder()
+                    .id(rs.getInt("genre_id"))
+                    .name(rs.getString("name"))
+                    .build();
     }
 }

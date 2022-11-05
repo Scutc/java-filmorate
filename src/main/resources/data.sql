@@ -4,7 +4,11 @@ VALUES (1, 'Подтвержденная', CURRENT_DATE()),
 
 INSERT INTO GENRES VALUES
        (1, 'Комедия', CURRENT_DATE()),
-       (2, 'Жанр 2', CURRENT_DATE());
+       (2, 'Драма', CURRENT_DATE()),
+       (3, 'Мелодрама', CURRENT_DATE()),
+       (4, 'Фантастика', CURRENT_DATE()),
+       (5, 'Ужасы', CURRENT_DATE()),
+       (6, 'Приключения', CURRENT_DATE());
 
 INSERT INTO FILM_CATEGORY VALUES
       (1, 'G', CURRENT_DATE()),

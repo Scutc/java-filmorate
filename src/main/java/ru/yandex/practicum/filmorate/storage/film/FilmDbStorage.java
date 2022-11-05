@@ -17,12 +17,12 @@ import java.util.*;
 
 @Slf4j
 @Component("filmDbStorage")
-public class FilmDbStorage implements FilmStorage{
+public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private Long idGenerator;
 
-//  Аналогично UsareStorage - пришлось отойти от заветов Lombok чтобы вычислить максимальный айдишник фильма
+    //  Аналогично UsareStorage - пришлось отойти от заветов Lombok чтобы вычислить максимальный айдишник фильма
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         idGenerator = findMaxFilmId();
@@ -85,15 +85,15 @@ public class FilmDbStorage implements FilmStorage{
 
         if (filmsRows.next()) {
             Film film = Film.builder()
-                    .id(filmsRows.getLong("film_id"))
-                    .name(filmsRows.getString("name"))
-                    .description(filmsRows.getString("description"))
-                    .releaseDate(filmsRows.getDate("release_date").toLocalDate())
-                    .duration(filmsRows.getLong("duration"))
-                    .mpa(getMpa(filmId))
-                    .likes(getLikes(filmId))
-                    .genres(getGenres(filmId))
-                    .build();
+                            .id(filmsRows.getLong("film_id"))
+                            .name(filmsRows.getString("name"))
+                            .description(filmsRows.getString("description"))
+                            .releaseDate(filmsRows.getDate("release_date").toLocalDate())
+                            .duration(filmsRows.getLong("duration"))
+                            .mpa(getMpa(filmId))
+                            .likes(getLikes(filmId))
+                            .genres(getGenres(filmId))
+                            .build();
 
             log.info("Найден фильм: {} {}", film.getId(), film.getName());
             return film;
@@ -158,10 +158,23 @@ public class FilmDbStorage implements FilmStorage{
         return filmRows;
     }
 
+    @Override
     public List<Film> getFilms(List<Long> filmsId) {
-        String sql = "SELECT * FROM films WHERE film_id IN ?";
-        List<Film> filmRows = jdbcTemplate.query(sql, (rs, rowNum) -> mapFilmFromRow(rs), filmsId);
-        return filmRows;
+        if (filmsId.size() > 0) {
+            String sql = "SELECT * FROM films WHERE film_id IN (?)";
+            StringBuilder strFilmIds = new StringBuilder();
+            for (int i = 0; i < filmsId.size(); i++) {
+                if (i != filmsId.size() - 1) {
+                    strFilmIds.append(filmsId.get(i)).append(",");
+                } else {
+                    strFilmIds.append(filmsId.get(i));
+                }
+            }
+            List<Film> filmRows = jdbcTemplate.query(sql, (rs, rowNum) -> mapFilmFromRow(rs), strFilmIds.toString());
+            return filmRows;
+        } else {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     private Film mapFilmFromRow(ResultSet rs) throws SQLException {

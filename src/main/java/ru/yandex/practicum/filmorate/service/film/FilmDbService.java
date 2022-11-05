@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class FilmDbService implements FilmService{
     public void addLike(long filmId, long userId) {
         String sqlQuery = "INSERT INTO users_films (film_id, user_id, last_update)" +
                 " VALUES (?, ?, ?)";
-        jdbcTemplate.update(sqlQuery, filmId, userId);
+        jdbcTemplate.update(sqlQuery, filmId, userId, LocalDateTime.now());
     }
 
     @Override
@@ -33,7 +35,7 @@ public class FilmDbService implements FilmService{
     public List<Film> getTopFilms(int topCount) {
         String sqlQuery = "SELECT film_id, count (DISTINCT user_id) AS cnt " +
                 "FROM users_films GROUP BY film_id ORDER BY cnt DESC LIMIT ?";
-        List<Long> filmRows = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getLong("film_id"));
+        List<Long> filmRows = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getLong("film_id"), topCount);
         return filmStorage.getFilms(filmRows);
     }
 }

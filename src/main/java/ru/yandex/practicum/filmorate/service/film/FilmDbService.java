@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Qualifier("filmDbService")
-public class FilmDbService implements FilmService{
+public class FilmDbService implements FilmService {
     private final JdbcTemplate jdbcTemplate;
     @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
@@ -33,8 +33,8 @@ public class FilmDbService implements FilmService{
 
     @Override
     public List<Film> getTopFilms(int topCount) {
-        String sqlQuery = "SELECT film_id, count (DISTINCT user_id) AS cnt " +
-                "FROM users_films GROUP BY film_id ORDER BY cnt DESC LIMIT ?";
+        String sqlQuery = "SELECT fl.FILM_ID, count(DISTINCT uf.USER_ID) as cnt FROM FILMS fl LEFT JOIN USERS_FILMS uf ON fl.FILM_ID = uf.FILM_ID " +
+                "GROUP BY fl.FILM_ID ORDER BY cnt DESC LIMIT ?";
         List<Long> filmRows = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> rs.getLong("film_id"), topCount);
         return filmStorage.getFilms(filmRows);
     }

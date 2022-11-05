@@ -30,7 +30,6 @@ public class GenreDbStorage {
         } else {
             log.info(" Жанр с ID {} не найден.", genreId);
             return null;
-
         }
     }
 

@@ -1,14 +1,12 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaDbStorage;
 
@@ -16,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component("filmDbStorage")
@@ -75,6 +74,11 @@ public class FilmDbStorage implements FilmStorage {
         if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
         }
+        if (film.getGenres() != null) {
+            Set<Genre> genreSorted = new TreeSet<>(Comparator.comparingInt(Genre::getId));
+            genreSorted.addAll(film.getGenres());
+            film.setGenres(genreSorted);
+        }
         return film;
     }
 
@@ -104,11 +108,7 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet mpaSet = jdbcTemplate.queryForRowSet(sql, filmId);
 
         if (mpaSet.next()) {
-            Mpa mpa = Mpa.builder()
-                         .id(mpaSet.getInt("category_id"))
-                         .name(mpaSet.getString("name"))
-                         .build();
-            return mpa;
+            return mpaDbStorage.getMpaById(mpaSet.getInt("category_id"));
         }
         return null;
     }
@@ -124,15 +124,13 @@ public class FilmDbStorage implements FilmStorage {
                 "ON g.genre_id = fg.GENRE_ID" +
                 " WHERE film_id = ?";
         List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> mapGenreFromRow(rs), filmId);
-        return new HashSet<>(genres);
+        TreeSet<Genre> genresTree = new TreeSet<>(Comparator.comparingInt(Genre::getId));
+        genresTree.addAll(genres);
+        return genresTree;
     }
 
     private Genre mapGenreFromRow(ResultSet rs) throws SQLException {
-        Genre genre = Genre.builder()
-                           .id(rs.getInt("genre_id"))
-                           .name(rs.getString("name"))
-                           .build();
-        return genre;
+        return genreDbStorage.getGenreById(rs.getInt("genre_id"));
     }
 
     @Override
@@ -155,22 +153,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getFilms(List<Long> filmsId) {
-        if (filmsId.size() > 0) {
-            String sql = "SELECT * FROM films WHERE film_id IN (?)";
-            StringBuilder strFilmIds = new StringBuilder();
-            for (int i = 0; i < filmsId.size(); i++) {
-                if (i != filmsId.size() - 1) {
-                    strFilmIds.append(filmsId.get(i)).append(",");
-                } else {
-                    strFilmIds.append(filmsId.get(i));
-                }
-            }
-            List<Film> filmRows = jdbcTemplate.query(sql, (rs, rowNum) -> mapFilmFromRow(rs), strFilmIds.toString());
-            return filmRows;
-        } else {
-            return Collections.EMPTY_LIST;
-        }
+        String inSql = String.join(",", Collections.nCopies(filmsId.size(), "?"));
+
+        List<Film> films = jdbcTemplate.query(
+                String.format("SELECT * FROM films WHERE film_id IN (%s)", inSql),
+                (rs, rowNum) -> mapFilmFromRow(rs),
+                filmsId.toArray());
+        return films;
     }
+
 
     private Film mapFilmFromRow(ResultSet rs) throws SQLException {
         Film film = Film.builder()

@@ -149,7 +149,6 @@ public class UserController {
         }
         userService.removeFriend(userId, friendId);
         log.info("Пользователь " + userId + " удалил из друзей " + friendId);
-
     }
 
     @GetMapping("/{userId}/friends")

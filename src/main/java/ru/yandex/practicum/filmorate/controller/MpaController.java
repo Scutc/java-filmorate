@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.mpa.MpaDbStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
 import java.util.List;
 
@@ -17,18 +17,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/mpa")
 public class MpaController {
-    private final MpaDbStorage mpaDbStorage;
+    private final MpaStorage mpaStorage;
 
     @GetMapping
     public List<Mpa> getAllMpa() {
         log.info("Запрошен список всех MPA-рейтингов");
-        return mpaDbStorage.getAllMpa();
+        return mpaStorage.getAllMpa();
     }
 
     @GetMapping("/{mpaId}")
     public Mpa getMpa(@PathVariable int mpaId) {
         log.info("Запрошен MPA-рейтинг с ID = {}", mpaId);
-        Mpa mpa = mpaDbStorage.getMpaById(mpaId);
+        Mpa mpa = mpaStorage.getMpaById(mpaId);
 
         if (mpa != null) {
             log.info("Найден MPA-рейтинг {} {}", mpaId, mpa.getName());

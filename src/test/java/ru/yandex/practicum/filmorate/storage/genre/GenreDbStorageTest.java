@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class GenreDbStorageTest {
 
-    private final GenreDbStorage genreDbStorage;
+    private final GenreStorage genreStorage;
 
     @Test
     public void getGenreById() {
-        Optional<Genre> genreOptional = Optional.ofNullable(genreDbStorage.getGenreById(3));
+        Optional<Genre> genreOptional = Optional.ofNullable(genreStorage.getGenreById(3));
         assertThat(genreOptional)
                 .isPresent()
                 .hasValueSatisfying(mpa -> assertThat(mpa).hasFieldOrPropertyWithValue("name", "Мультфильм"));
@@ -31,7 +29,7 @@ public class GenreDbStorageTest {
 
     @Test
     public void getAllGenres() {
-        List<Genre> mpas = genreDbStorage.getAllGenres();
+        List<Genre> mpas = genreStorage.getAllGenres();
         assertEquals(6, mpas.size());
     }
 }

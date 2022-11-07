@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
 import java.util.List;
 
@@ -18,18 +18,18 @@ import java.util.List;
 @RequestMapping("/genres")
 public class GenreController {
 
-    private final GenreDbStorage genreDbStorage;
+    private final GenreStorage genreStorage;
 
     @GetMapping
     public List<Genre> getGenres() {
         log.info("Запрошен список всех жанров");
-        return genreDbStorage.getAllGenres();
+        return genreStorage.getAllGenres();
     }
 
     @GetMapping("/{genreId}")
     public Genre getGenre(@PathVariable int genreId) {
         log.info("Запрошен жанр с ID = {}", genreId);
-        Genre genre = genreDbStorage.getGenreById(genreId);
+        Genre genre = genreStorage.getGenreById(genreId);
 
         if (genre != null) {
             log.info("Найден жанр {} {}", genreId, genre.getName());

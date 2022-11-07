@@ -17,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class MpaDbStorageTest {
 
-    private final MpaDbStorage mpaDbStorage;
+    private final MpaStorage mpaStorage;
 
     @Test
     public void getMpaById() {
-        Optional<Mpa> mpaOptional = Optional.ofNullable(mpaDbStorage.getMpaById(1));
+        Optional<Mpa> mpaOptional = Optional.ofNullable(mpaStorage.getMpaById(1));
         assertThat(mpaOptional)
                 .isPresent()
                 .hasValueSatisfying(mpa -> assertThat(mpa).hasFieldOrPropertyWithValue("name", "G"));
@@ -29,8 +29,7 @@ public class MpaDbStorageTest {
 
     @Test
     public void getAllMpa() {
-        List<Mpa> mpas = mpaDbStorage.getAllMpa();
+        List<Mpa> mpas = mpaStorage.getAllMpa();
         assertEquals(5, mpas.size());
     }
-
 }

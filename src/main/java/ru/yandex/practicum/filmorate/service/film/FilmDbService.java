@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Service
-@Qualifier("filmDbService")
+@Service("filmDbService")
 public class FilmDbService implements FilmService {
     private final JdbcTemplate jdbcTemplate;
     @Qualifier("filmDbStorage")

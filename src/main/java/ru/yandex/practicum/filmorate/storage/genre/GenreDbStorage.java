@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class GenreDbStorage {
+public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
 

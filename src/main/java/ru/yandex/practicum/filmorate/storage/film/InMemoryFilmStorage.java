@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
     private Long idGenerator = 0L;
@@ -30,16 +30,19 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public boolean deleteFilm(Film film) {
         Film removedFilm = films.remove(film.getId());
-        if (removedFilm != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return removedFilm != null;
     }
 
     @Override
     public List<Film> getFilms() {
         return new ArrayList<>(films.values());
+    }
+
+    @Override
+    public List<Film> getFilms(List<Long> filmsId) {
+        return filmsId.stream()
+                      .map(films::get)
+                      .collect(Collectors.toList());
     }
 
     @Override

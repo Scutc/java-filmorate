@@ -1,21 +1,38 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.time.LocalDate;
 import java.util.HashSet;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserStorageTest {
-    private UserStorage userStorage;
+
+    @Qualifier("userDbStorage")
+    private final UserStorage userStorage;
+    private final JdbcTemplate jdbcTemplate;
 
     @BeforeEach
-    void userStorageTestsInitialization() {
-        userStorage = new InMemoryUserStorage();
+    void beforeEach() {
+        jdbcTemplate.update("DELETE FROM USERS_FRIENDS");
+        jdbcTemplate.update("DELETE FROM USERS_FILMS");
+        jdbcTemplate.update("DELETE FROM USERS");
+        jdbcTemplate.update("DELETE FROM FILMS_GENRES");
+        jdbcTemplate.update("DELETE FROM FILMS");
     }
 
     @Test
@@ -30,36 +47,25 @@ public class UserStorageTest {
                          .build();
 
         userStorage.createUser(user1);
-        assertEquals(1, userStorage.getUsers().size());
+
+        Optional<User> userOptional = Optional.ofNullable(userStorage.getUser(1L));
+        assertThat(userOptional)
+                .isPresent()
+                .hasValueSatisfying(user ->
+                        assertThat(user).hasFieldOrPropertyWithValue("id", 1L)
+                );
+
+        user1.setName("After Update");
+        userStorage.updateUser(user1);
+
+        userOptional = Optional.ofNullable(userStorage.getUser(1L));
+        assertThat(userOptional).isPresent()
+                                .hasValueSatisfying(user -> assertThat(user)
+                                        .hasFieldOrPropertyWithValue("name", "After Update"));
 
         userStorage.deleteUser(user1);
-        assertNull(userStorage.getUser(1L));
-    }
-
-    @Test
-    void updateUser() {
-        User user1 = User.builder()
-                         .id(1L)
-                         .birthday(LocalDate.of(2000, 10, 10))
-                         .email("user1@gmail.com")
-                         .login("user1")
-                         .name("Пользователь 1")
-                         .friends(new HashSet<>())
-                         .build();
-
-        userStorage.createUser(user1);
-
-        User userUpdated = User.builder()
-                               .id(1L)
-                               .birthday(LocalDate.of(2000, 10, 10))
-                               .email("user1@gmail.com")
-                               .login("user1")
-                               .name("Пользователь Обновленный")
-                               .friends(new HashSet<>())
-                               .build();
-
-        userStorage.updateUser(userUpdated);
-        assertEquals("Пользователь Обновленный", userStorage.getUser(1L).getName());
+        Optional<User> optionalUser = Optional.ofNullable(userStorage.getUser(1L));
+        assertThat(optionalUser).isEmpty();
     }
 
     @Test

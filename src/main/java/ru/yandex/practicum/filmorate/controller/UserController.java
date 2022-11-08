@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -18,7 +19,9 @@ import java.util.*;
 @RequestMapping("/users")
 public class UserController {
 
+    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
+    @Qualifier("userDbService")
     private final UserService userService;
 
     @PostMapping
@@ -112,11 +115,11 @@ public class UserController {
 
             if (user == null) {
                 log.warn("Пользователь с ID " + userId + " не найден. ");
-                response.append("Пользователь с ID " + userId + " не найден. ");
+                response.append("Пользователь с ID ").append(userId).append(" не найден. ");
             }
             if (friend == null) {
                 log.warn(("Друг с ID " + friendId + " не найден. "));
-                response.append("Друг с ID " + friendId + " не найден. ");
+                response.append("Друг с ID ").append(friendId).append(" не найден. ");
             }
             throw new UserNotFoundException(response.toString());
         }
@@ -136,17 +139,16 @@ public class UserController {
 
             if (user == null) {
                 log.warn("Пользователь с ID " + userId + "не найден. ");
-                response.append("Пользователь с ID " + userId + "не найден. ");
+                response.append("Пользователь с ID ").append(userId).append("не найден. ");
             }
             if (friend == null) {
                 log.warn("Друг с ID " + friendId + " не найден. ");
-                response.append("Друг с ID " + friendId + " не найден. ");
+                response.append("Друг с ID ").append(friendId).append(" не найден. ");
             }
             throw new UserNotFoundException(response.toString());
         }
         userService.removeFriend(userId, friendId);
         log.info("Пользователь " + userId + " удалил из друзей " + friendId);
-
     }
 
     @GetMapping("/{userId}/friends")

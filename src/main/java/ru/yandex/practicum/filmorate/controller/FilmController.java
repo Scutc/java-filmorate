@@ -1,7 +1,8 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
@@ -16,14 +17,17 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/films")
-
 public class FilmController {
 
+    @Qualifier("filmDbStorage")
     private final FilmStorage filmStorage;
+    @Qualifier("filmDbService")
     private final FilmService filmService;
+
+    @Qualifier("userDbStorage")
     private final UserStorage userStorage;
 
     @PostMapping
@@ -32,7 +36,7 @@ public class FilmController {
 
         if (validationFilm(film)) {
             filmStorage.createFilm(film);
-            log.info("Фильм дробавлен");
+            log.info("Добавлен фильм: " + film.getId() + " " + film.getName());
         } else {
             log.warn("Фильм не добавлен!");
             throw new ValidationException("Проверьте корректность введенных данных");
@@ -145,6 +149,10 @@ public class FilmController {
         if (film.getDuration() < 0) {
             isValidated = false;
             log.warn("Отрицательная продолжительность фильма: " + film.getDuration());
+        }
+        if (film.getMpa() == null) {
+            isValidated = false;
+            log.warn("Не задане MPA-рейтинг");
         }
         return isValidated;
     }
